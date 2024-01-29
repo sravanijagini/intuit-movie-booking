@@ -4,10 +4,8 @@ import com.example.intuitmoviebooking.model.enums.MovieCertification;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +17,7 @@ public class Movie {
     @JsonIgnore
     private UUID movieId;
 
-    @NotNull
+//    @NotNull
     @JsonProperty("movieTitle")
     private String movieTitle;
 

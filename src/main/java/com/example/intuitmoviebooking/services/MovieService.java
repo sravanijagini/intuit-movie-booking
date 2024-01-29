@@ -25,6 +25,7 @@ public class MovieService {
     public void addNewMovie(Movie new_movie){
 
         new_movie.setMovieId(UUID.randomUUID());
+        new_movie.setMovieTitle(new_movie.getMovieTitle().toLowerCase());
 
         movieRepository.save(new_movie);
 

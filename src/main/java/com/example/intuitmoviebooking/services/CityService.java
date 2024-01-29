@@ -29,6 +29,7 @@ public class CityService {
                 .anyMatch(city -> city.getCityName().equals(new_city.getCityName()));
 
         if(!anyMatch){
+            new_city.setCityName(new_city.getCityName().toLowerCase());
             cityRepository.save(new_city);
         }
     }

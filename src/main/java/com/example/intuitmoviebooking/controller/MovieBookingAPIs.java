@@ -1,17 +1,18 @@
 package com.example.intuitmoviebooking.controller;
 
-import com.example.intuitmoviebooking.model.City;
-import com.example.intuitmoviebooking.model.Movie;
-import com.example.intuitmoviebooking.model.User;
+import com.example.intuitmoviebooking.model.*;
 import com.example.intuitmoviebooking.services.CityService;
 import com.example.intuitmoviebooking.services.MovieService;
+import com.example.intuitmoviebooking.services.TheatreService;
 import com.example.intuitmoviebooking.services.UserService;
+import com.example.intuitmoviebooking.validator.RequestValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,12 +22,16 @@ public class MovieBookingAPIs {
     private final CityService cityService;
     private final UserService userService;
     private final MovieService movieService;
+    private final TheatreService theatreService;
+    private final RequestValidation requestValidation;
 
     @Autowired
-    MovieBookingAPIs(CityService cityService, UserService userService, MovieService movieService){
+    MovieBookingAPIs(CityService cityService, UserService userService, MovieService movieService, TheatreService theatreService, RequestValidation requestValidation){
         this.cityService = cityService;
         this.userService = userService;
         this.movieService = movieService;
+        this.theatreService = theatreService;
+        this.requestValidation = requestValidation;
     }
 
     // add a new city
@@ -54,7 +59,7 @@ public class MovieBookingAPIs {
     }
 
     // Create a new User
-    @PostMapping(value = "/add/user", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add/user", consumes = MediaType.APPLICATION_JSON_VALUE) 
     public ResponseEntity<String> addNewUser(@RequestBody User user){
         try{
             if(userService.addNewUser(user)){
@@ -80,7 +85,6 @@ public class MovieBookingAPIs {
     }
 
     // get a movie by its title
-
     @GetMapping("/movie/{movieTitle}")
     public ResponseEntity<List<Movie>> getMoviesByTitle(@PathVariable("movieTitle")  String title){
         List<Movie> movieList;
@@ -93,23 +97,37 @@ public class MovieBookingAPIs {
         }
     }
 
+    // create a new theatre
+    @PostMapping(value = "/add/theatre", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> addNewTheatre(@RequestBody Theatre theatre){
+        try{
+            List<String> validation = requestValidation.validateTheatre(theatre);
 
+            if(!validation.isEmpty()){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validation);
+            }
 
-    // create a new theater
-
-    // create a new movie
-
+            if(theatreService.addNewTheatre(theatre)){
+                List<String> res = new ArrayList<>();
+                res.add("A Theatre Already Exists with this name in this city");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+            }
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
 
     // getAllMoviesByCityName
 
     // getMovieInfoById
 
-    // getAllTheatersByCityName&MovieId
+    // getAllTheatresByCityName&MovieId
 
-    // getAllShowsByTheaterId, Movie & City
+    // getAllShowsByTheatreId, Movie & City
 
-    // get All movies by theater?
+    // get All movies by theatre?
 
     // book a seat
 

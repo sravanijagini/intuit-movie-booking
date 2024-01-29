@@ -7,5 +7,5 @@ public class Booking {
 
     private Movie movie;
 
-    private Theater theater;
+    private Theatre theatre;
 }

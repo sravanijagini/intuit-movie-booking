@@ -1,7 +1,6 @@
 package com.example.intuitmoviebooking.repository;
 
 import com.example.intuitmoviebooking.model.Movie;
-import com.example.intuitmoviebooking.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
