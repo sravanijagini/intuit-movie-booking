@@ -1,17 +1,24 @@
 package com.example.intuitmoviebooking.model;
 
-import com.example.intuitmoviebooking.model.enums.TypeOfSeat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class Seat {
+    @JsonProperty("row")
+    private int row;
 
-    private TypeOfSeat typeOfSeat;
+    @JsonProperty("col")
+    private int col;
 
-    private int numberOfSeats;
+    @JsonProperty("isBooked")
+    private boolean isBooked;
 
-    private List<Boolean> availabilityOfSeats;
+    private Booking booking;
 
+    public Seat(int row, int col, boolean isBooked) {
+        this.row = row;
+        this.col = col;
+        this.isBooked = isBooked;
+    }
 }

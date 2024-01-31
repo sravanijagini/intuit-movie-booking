@@ -16,7 +16,7 @@ public class User {
     private String userName;
 
     @JsonProperty("userBookings")
-    private List<Movie> userBookings;
+    private List<Booking> userBookings;
 
     @Id
     @NotNull

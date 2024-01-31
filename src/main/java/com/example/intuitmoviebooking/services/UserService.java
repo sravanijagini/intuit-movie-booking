@@ -1,6 +1,5 @@
 package com.example.intuitmoviebooking.services;
 
-import com.example.intuitmoviebooking.model.City;
 import com.example.intuitmoviebooking.model.User;
 import com.example.intuitmoviebooking.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +17,23 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getUserById(User user){
-        return userRepository.findAll(user.getMailId());
+    public List<User> getUserById(String userMailId){
+        return userRepository.findAll(userMailId);
     }
 
     public boolean addNewUser(User new_user){
         // Get all Cities and add if it is not a duplicate
-        List<User> userList = getUserById(new_user);
+        List<User> userList = getUserById(new_user.getMailId());
         boolean anyMatch = userList.stream()
                 .anyMatch(user -> user.getMailId().equals(new_user.getMailId()));
 
         if(!anyMatch){
-            userRepository.save(new_user);
+            adduserIntoDB(new_user);
         }
-
         return anyMatch;
     }
 
+    public void adduserIntoDB(User user){
+        userRepository.save(user);
+    }
 }

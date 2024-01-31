@@ -53,12 +53,14 @@ public class RequestValidation {
         String valid_time_regex = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
         List<String> invalid_time = new ArrayList<>();
 
-        Set<String> hs =  hall.getShowTimings().keySet();
-        hs.forEach(time -> {
-            if(!time.matches(valid_time_regex)){
-                invalid_time.add("Invalid time format : " + time + ". Please use hh:mm format");
-            }
-        });
+        if(hall.getShowTimings() != null){
+            Set<String> hs =  hall.getShowTimings().keySet();
+            hs.forEach(time -> {
+                if(!time.matches(valid_time_regex)){
+                    invalid_time.add("Invalid time format : " + time + ". Please use hh:mm format");
+                }
+            });
+        }
 
         return invalid_time;
     }
@@ -67,17 +69,21 @@ public class RequestValidation {
 
         List<String> invalid_movies = new ArrayList<>();
 
-        Collection<String> list_of_movies = hall.getShowTimings().values();
-        List<Movie> movies = movieRepository.findAll();
-        List<String> movie_names_db = movies.stream().map(Movie::getMovieTitle).toList();
+        if(hall.getShowTimings() != null){
 
-        list_of_movies.forEach(movie_from_user ->
-            {
-                if(!movie_names_db.contains(movie_from_user.toLowerCase())){
-                    invalid_movies.add("Invalid movie : " + movie_from_user + ". Please use a valid movie");
-                }
-            }
-        );
+            Collection<String> list_of_movies = hall.getShowTimings().values();
+            List<Movie> movies = movieRepository.findAll();
+            List<String> movie_names_db = movies.stream().map(Movie::getMovieTitle).toList();
+
+            list_of_movies.forEach(movie_from_user ->
+                    {
+                        if(!movie_names_db.contains(movie_from_user.toLowerCase())){
+                            invalid_movies.add("Invalid movie : " + movie_from_user + ". Please use a valid movie");
+                        }
+                    }
+            );
+        }
+
 
         return invalid_movies;
     }

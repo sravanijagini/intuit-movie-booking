@@ -42,5 +42,4 @@ public class Movie {
     @JsonProperty("language")
     private String language;
 
-    // ToDo : Poster ?
 }

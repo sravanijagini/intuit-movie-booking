@@ -4,7 +4,6 @@ import com.example.intuitmoviebooking.model.enums.TypeOfHall;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.List;
 import java.util.Map;
 
 @Data
@@ -16,13 +15,10 @@ public class Hall {
     @JsonProperty("typeOfHall")
     private TypeOfHall typeOfHall;
 
-    @JsonProperty("hallInformation")
+    @JsonProperty("time-movie")
     private Map<String, String> showTimings; // 9:00 -> race , 10:00 -> race2
 
-    @JsonProperty("numberOfSeatsInEachRow")
-    private List<Integer> numberOfSeatsInEachRow;
-
-    @JsonProperty("seats")
-    private List<Seat> seats;
+    @JsonProperty("time-seatLayout")
+    private Map<String, SeatLayout> seatLayoutPerShow;
 
 }
