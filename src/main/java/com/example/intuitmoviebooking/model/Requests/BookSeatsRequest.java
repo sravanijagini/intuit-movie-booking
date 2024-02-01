@@ -27,4 +27,15 @@ public class BookSeatsRequest {
     @JsonProperty("seatsToBook")
     private List<Seat> seatsToBook;
 
+    public BookSeatsRequest(String cityName, int theatreId, int hallId, String showTime, List<Seat> seatsToBook) {
+        this.cityName = cityName;
+        this.theatreId = theatreId;
+        this.hallId = hallId;
+        this.showTime = showTime;
+        this.setSeatsToBook(seatsToBook);
+    }
+
+    public BookSeatsRequest(){
+
+    }
 }

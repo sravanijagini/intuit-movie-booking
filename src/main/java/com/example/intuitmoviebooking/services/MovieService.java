@@ -17,19 +17,14 @@ public class MovieService {
         this.movieRepository = movieRepository;
     }
 
-
     public List<Movie> getMovieByTitle(String movieTitle){
         return movieRepository.findAll(movieTitle.toLowerCase());
     }
 
     public void addNewMovie(Movie new_movie){
 
-        new_movie.setMovieId(UUID.randomUUID());
         new_movie.setMovieTitle(new_movie.getMovieTitle().toLowerCase());
-
         movieRepository.save(new_movie);
 
     }
-
-
 }

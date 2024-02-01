@@ -33,4 +33,5 @@ public class Theatre {
     @JsonProperty("locationDetails")
     private String locationDetails;
 
+
 }

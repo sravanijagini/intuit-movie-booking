@@ -98,32 +98,6 @@ public class TheatreService {
             hall.setSeatLayoutPerShow(hm);
         });
 
-//        hallList.forEach(hall -> {
-//            SeatLayout seatLayout = hall.getSeatLayout();
-//            int rows = 1;
-//            int cols = 1;
-//
-//            if(seatLayout.getSeats() == null || seatLayout.getSeats().isEmpty()){
-//                List<Seat> new_seats = new ArrayList<>();
-//
-//                while(rows <= seatLayout.getRows()){
-//                    Seat new_seat = new Seat(rows, cols, false);
-//                    new_seats.add(new_seat);
-//                    cols++;
-//
-//                    if(cols > seatLayout.getCols()){
-//                        cols = 1;
-//                        rows++;
-//                    }
-//                }
-//                seatLayout.setSeats(new_seats);
-//            }
-//
-//
-//
-//            hall.setSeatLayout(seatLayout);
-//        });
-
         theatreRepository.save(new_theatre);
 
         theatreList.add(new_theatre);
@@ -194,28 +168,41 @@ public class TheatreService {
         return ResponseEntity.ok(null);
     }
 
-    private Theatre getTheatresByCityAndId(String city, int  theatreId){
+    Theatre getTheatresByCityAndId(String city, int theatreId){
         Query query = new Query(Criteria.where("theatreId").is(theatreId));
         List<Theatre> theatreList =  mongoTemplate.find(query, Theatre.class);
 
-        return theatreList.stream().map(theatre -> {
-            if(theatre.getCityName() != null && theatre.getCityName().equalsIgnoreCase(city)){
-                return theatre;
+        if(theatreList != null && !theatreList.isEmpty()){
+
+            List<Theatre> theatresFromDB = theatreList.stream().map(theatre -> {
+                if(theatre.getCityName() != null && theatre.getCityName().equalsIgnoreCase(city)){
+                    return theatre;
+                }
+                return null;
+            }).toList();
+
+            if(theatresFromDB.isEmpty()){
+                return null;
             }
-            return null;
-        }).toList().getFirst();
+
+            return theatresFromDB.getFirst();
+        }
+        return null;
     }
 
-    private List<Seat> getAllSeats(BookSeatsRequest  bookSeatsRequest){
+    List<Seat> getAllSeats(BookSeatsRequest bookSeatsRequest){
         Theatre theatre = getTheatresByCityAndId(bookSeatsRequest.getCityName() , bookSeatsRequest.getTheatreId());
 
-        List<Hall> hallsInTheatre = theatre.getHalls();
-        Hall requiredHall = hallsInTheatre.stream()
-                .filter(hall -> hall.getHallId() == bookSeatsRequest.getHallId())
-                .toList().getFirst();
+        if(theatre != null){
+            List<Hall> hallsInTheatre = theatre.getHalls();
+            Hall requiredHall = hallsInTheatre.stream()
+                    .filter(hall -> hall.getHallId() == bookSeatsRequest.getHallId())
+                    .toList().getFirst();
 
-        if(requiredHall != null && requiredHall.getSeatLayoutPerShow()!= null && requiredHall.getSeatLayoutPerShow().get(bookSeatsRequest.getShowTime()) != null){
-            return requiredHall.getSeatLayoutPerShow().get(bookSeatsRequest.getShowTime()).getSeats();
+            if(requiredHall != null && requiredHall.getSeatLayoutPerShow()!= null && requiredHall.getSeatLayoutPerShow().get(bookSeatsRequest.getShowTime()) != null){
+                return requiredHall.getSeatLayoutPerShow().get(bookSeatsRequest.getShowTime()).getSeats();
+            }
+
         }
         return null;
     }

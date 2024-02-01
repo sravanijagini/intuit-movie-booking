@@ -33,6 +33,4 @@ public class CityService {
             cityRepository.save(new_city);
         }
     }
-
-
 }

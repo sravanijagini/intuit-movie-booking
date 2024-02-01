@@ -119,7 +119,7 @@ public class MovieBookingAPIs {
         }
     }
 
-    @GetMapping("/theatre/city/{city}")
+    @GetMapping("/city/theatre/{city}")
     public ResponseEntity<TheatreResponse> getAllTheatresByCity(@PathVariable("city")  String cityName){
         try{
             return theatreService.getTheatresByCity(cityName);
@@ -175,17 +175,5 @@ public class MovieBookingAPIs {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
-    // getAllMoviesByCityName
-
-    // getMovieInfoById
-
-    // getAllTheatresByCityName&MovieId
-
-    // getAllShowsByTheatreId, Movie & City
-
-    // get All movies by theatre?
-
-    // book a seat
 
 }

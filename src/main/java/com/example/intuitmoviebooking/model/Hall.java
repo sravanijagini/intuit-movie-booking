@@ -4,6 +4,7 @@ import com.example.intuitmoviebooking.model.enums.TypeOfHall;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -21,4 +22,9 @@ public class Hall {
     @JsonProperty("time-seatLayout")
     private Map<String, SeatLayout> seatLayoutPerShow;
 
+//    public Hall(int hallId, String typeOfHall, HashMap<String, SeatLayout> seatLayoutPerShow) {
+//        this.hallId = hallId;
+//        this.typeOfHall = TypeOfHall.valueOf(typeOfHall);
+//        this.setSeatLayoutPerShow(seatLayoutPerShow);
+//    }
 }

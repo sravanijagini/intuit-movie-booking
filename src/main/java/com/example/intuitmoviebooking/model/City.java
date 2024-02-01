@@ -21,4 +21,9 @@ public class City {
 
     @JsonProperty("movies")
     private List<Movie> movies;
+
+
+//    public City(String cityName) {
+//        this.cityName = cityName;
+//    }
 }

@@ -26,4 +26,8 @@ public class User {
     @JsonProperty("phoneNumber")
     private String phoneNumber;
 
+//    public User(String userName, String mailId) {
+//        this.userName = userName;
+//        this.mailId = mailId;
+//    }
 }

@@ -14,10 +14,10 @@ import java.util.UUID;
 @Document("movies")
 public class Movie {
 
-    @JsonIgnore
-    private UUID movieId;
+//    @JsonIgnore
+//    private UUID movieId;
 
-//    @NotNull
+    //    @NotNull
     @JsonProperty("movieTitle")
     private String movieTitle;
 
@@ -42,4 +42,7 @@ public class Movie {
     @JsonProperty("language")
     private String language;
 
+//    public Movie(String movieTitle) {
+//        this.movieTitle = movieTitle;
+//    }
 }
