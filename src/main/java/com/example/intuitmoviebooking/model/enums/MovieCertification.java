@@ -4,7 +4,7 @@ public enum MovieCertification {
     U,
     UA,
     A,
-    S;
+    S
 
 //    U – unrestricted.
 //    UA – unrestricted but with a parental discretion advisory for children under 12 years.

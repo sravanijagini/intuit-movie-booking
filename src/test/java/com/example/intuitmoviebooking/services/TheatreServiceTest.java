@@ -1,11 +1,8 @@
 package com.example.intuitmoviebooking.services;
 
-import com.example.intuitmoviebooking.Utils.HelperUtil;
 import com.example.intuitmoviebooking.model.*;
 import com.example.intuitmoviebooking.model.Requests.BookSeatsRequest;
-import com.example.intuitmoviebooking.model.Responses.BookSeatResponse;
 import com.example.intuitmoviebooking.model.Responses.TheatreResponse;
-import com.example.intuitmoviebooking.model.enums.TypeOfHall;
 import com.example.intuitmoviebooking.repository.TheatreRepository;
 import com.example.intuitmoviebooking.validator.RequestValidation;
 import org.junit.jupiter.api.Test;
@@ -18,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -95,7 +90,7 @@ public class TheatreServiceTest {
     public void testGetTheatresByCity_Success() {
         
         String cityName = "Bangalore";
-        List<Theatre> theatres = Arrays.asList(theatreObj(1, cityName, "PVR", Collections.emptyList(), Collections.emptyList()));
+        List<Theatre> theatres = List.of(theatreObj(1, cityName, "PVR", Collections.emptyList(), Collections.emptyList()));
         when(requestValidation.validateCity(cityName)).thenReturn(null);
         when(theatreRepository.findAll(cityName)).thenReturn(theatres);
 
@@ -169,7 +164,7 @@ public class TheatreServiceTest {
         when(mongoTemplate.find(any(), eq(Theatre.class))).thenReturn(theatreList);
         Movie newMovie = new Movie();
         newMovie.setMovieTitle("Race");
-        when(movieService.getMovieByTitle("Race")).thenReturn(Arrays.asList(newMovie));
+        when(movieService.getMovieByTitle("Race")).thenReturn(List.of(newMovie));
 
         
         ResponseEntity<List<Movie>> result = theatreService.getListOfMoviesByTheatreId(theatreId);

@@ -42,7 +42,7 @@ public class CityServiceTest {
     public void testAddNewCity_Success() {
         City newCity = new City();
         newCity.setCityName("NewCity");
-        when(cityRepository.findAll()).thenReturn(Arrays.asList()); // No existing cities
+        when(cityRepository.findAll()).thenReturn(List.of()); // No existing cities
 
         cityService.addNewCity(newCity);
 
@@ -54,7 +54,7 @@ public class CityServiceTest {
     public void testAddNewCity_Duplicate() {
         City existingCity = new City();
         existingCity.setCityName("ExistingCity");
-        when(cityRepository.findAll()).thenReturn(Arrays.asList(existingCity)); // Existing city with the same name
+        when(cityRepository.findAll()).thenReturn(List.of(existingCity)); // Existing city with the same name
 
         cityService.addNewCity(existingCity);
 

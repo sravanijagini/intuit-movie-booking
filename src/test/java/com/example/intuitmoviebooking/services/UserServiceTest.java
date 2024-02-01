@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +27,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUserName("Test User");
         user.setMailId(userMailId);
-        when(userRepository.findAll(userMailId)).thenReturn(Arrays.asList(user));
+        when(userRepository.findAll(userMailId)).thenReturn(List.of(user));
 
         List<User> result = userService.getUserById(userMailId);
 
@@ -42,7 +41,7 @@ public class UserServiceTest {
         User newUser = new User();
         newUser.setUserName("New User");
         newUser.setMailId(userMailId);
-        when(userRepository.findAll(userMailId)).thenReturn(Arrays.asList());
+        when(userRepository.findAll(userMailId)).thenReturn(List.of());
 
         boolean result = userService.addNewUser(newUser);
 
@@ -56,7 +55,7 @@ public class UserServiceTest {
         User existingUser = new User();
         existingUser.setUserName("sravani");
         existingUser.setMailId(existingUserMailId);
-        when(userRepository.findAll(existingUserMailId)).thenReturn(Arrays.asList(existingUser));
+        when(userRepository.findAll(existingUserMailId)).thenReturn(List.of(existingUser));
         boolean result = userService.addNewUser(existingUser);
 
         assertTrue(result);
