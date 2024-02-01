@@ -14,10 +14,6 @@ import java.util.UUID;
 @Document("movies")
 public class Movie {
 
-//    @JsonIgnore
-//    private UUID movieId;
-
-    //    @NotNull
     @JsonProperty("movieTitle")
     private String movieTitle;
 

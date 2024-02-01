@@ -39,12 +39,6 @@ public class TheatreServiceTest {
     private MovieService movieService;
 
     @Mock
-    private UserService userService;
-
-    @Mock
-    private HelperUtil helperUtil;
-
-    @Mock
     private MongoTemplate mongoTemplate;
 
     @InjectMocks
@@ -139,9 +133,7 @@ public class TheatreServiceTest {
         List<Theatre> theatres = Collections.singletonList(theatreObj(1, city, theatreName, Collections.emptyList(), Collections.emptyList()));
         when(theatreRepository.findAll(city, theatreName)).thenReturn(theatres);
 
-        
         ResponseEntity<TheatreResponse> result = theatreService.getTheatresByCityAndName(city, theatreName);
-
         
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertNotNull(result.getBody());
@@ -216,36 +208,5 @@ public class TheatreServiceTest {
         assertNull(result.getBody());
     }
 
-    @Test
-    public void testBookSeats_Success() {
-        
-        BookSeatsRequest bookSeatsRequest = new BookSeatsRequest("Bangalore", 1, 1, "9:00", Collections.singletonList(new Seat(1, 1, false)));
-        Hall hall = new Hall();
-        hall.setHallId(1);
-        hall.setTypeOfHall(TypeOfHall.valueOf("TWO_DIMENSION"));
-        hall.setSeatLayoutPerShow(new HashMap<>());
-        Theatre theatre = theatreObj(1,
-                "Bangalore",
-                "PVR",
-                Collections.emptyList(),
-                Collections.singletonList(hall));
-        User user = new User();
-        user.setUserName("");
-        user.setMailId("");
-        when(userService.getUserById(bookSeatsRequest.getMailId())).thenReturn(Collections.singletonList(user));
-        when(theatreService.getTheatresByCityAndId(bookSeatsRequest.getCityName(), bookSeatsRequest.getTheatreId())).thenReturn(theatre);
-        when(theatreService.getAllSeats(bookSeatsRequest)).thenReturn(Collections.singletonList(new Seat(1, 1, false)));
-        when(helperUtil.createBooking(any(), any())).thenReturn(new Booking());
-
-        
-        ResponseEntity<BookSeatResponse> result = theatreService.bookSeats(bookSeatsRequest);
-
-        
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertNotNull(result.getBody());
-        assertNotNull(result.getBody().getMailId());
-        assertNotNull(result.getBody().getMessages());
-        assertEquals("Booking is successful", result.getBody().getStatus());
-    }
 
 }

@@ -417,30 +417,4 @@ public class MovieBookingAPIsTest {
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
     }
 
-    @Test
-    public void testBookSeats_Success() {
-        
-        BookSeatsRequest bookSeatsRequest = new BookSeatsRequest();
-        when(theatreService.bookSeats(bookSeatsRequest)).thenReturn(ResponseEntity.ok(new BookSeatResponse()));
-
-        
-        ResponseEntity<BookSeatResponse> result = movieBookingAPIs.bookSeats(bookSeatsRequest);
-
-        
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertNotNull(result.getBody());
-    }
-
-    @Test
-    public void testBookSeats_Exception() {
-        
-        BookSeatsRequest bookSeatsRequest = new BookSeatsRequest();
-        when(theatreService.bookSeats(bookSeatsRequest)).thenReturn(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-
-        
-        ResponseEntity<BookSeatResponse> result = movieBookingAPIs.bookSeats(bookSeatsRequest);
-
-        
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-    }
 }

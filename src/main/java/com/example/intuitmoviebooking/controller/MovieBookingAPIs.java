@@ -4,10 +4,7 @@ import com.example.intuitmoviebooking.model.*;
 import com.example.intuitmoviebooking.model.Requests.BookSeatsRequest;
 import com.example.intuitmoviebooking.model.Responses.BookSeatResponse;
 import com.example.intuitmoviebooking.model.Responses.TheatreResponse;
-import com.example.intuitmoviebooking.services.CityService;
-import com.example.intuitmoviebooking.services.MovieService;
-import com.example.intuitmoviebooking.services.TheatreService;
-import com.example.intuitmoviebooking.services.UserService;
+import com.example.intuitmoviebooking.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,16 +21,19 @@ public class MovieBookingAPIs {
     private final UserService userService;
     private final MovieService movieService;
     private final TheatreService theatreService;
+    private final BookingService bookingService;
 
     @Autowired
     MovieBookingAPIs(CityService cityService,
                      UserService userService,
                      MovieService movieService,
-                     TheatreService theatreService){
+                     TheatreService theatreService,
+                     BookingService bookingService){
         this.cityService = cityService;
         this.userService = userService;
         this.movieService = movieService;
         this.theatreService = theatreService;
+        this.bookingService = bookingService;
     }
 
     // add a new city
@@ -41,7 +41,7 @@ public class MovieBookingAPIs {
     public ResponseEntity<String> addNewCity(@RequestBody City city){
         try{
             cityService.addNewCity(city);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body("City added successfully");
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -67,7 +67,7 @@ public class MovieBookingAPIs {
             if(userService.addNewUser(user)){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User Already Exists!");
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body("User added successfully");
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -90,7 +90,7 @@ public class MovieBookingAPIs {
     public ResponseEntity<String> addNewMovie(@RequestBody Movie movie){
         try{
             movieService.addNewMovie(movie);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            return ResponseEntity.status(HttpStatus.OK).body("Movie added successfully");
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
@@ -147,6 +147,7 @@ public class MovieBookingAPIs {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @GetMapping("/theatres/{theatreId}/movies")
     public ResponseEntity<List<Movie>> getListOfMoviesByTheatreId(@PathVariable("theatreId") String theatreId){
         try{
@@ -170,7 +171,7 @@ public class MovieBookingAPIs {
     @PostMapping("/bookSeats")
     public ResponseEntity<BookSeatResponse> bookSeats(@RequestBody BookSeatsRequest bookSeatsRequest){
         try{
-            return theatreService.bookSeats(bookSeatsRequest);
+            return bookingService.bookSeats(bookSeatsRequest);
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
