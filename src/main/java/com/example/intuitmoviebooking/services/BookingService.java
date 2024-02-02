@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
-public class BookingService {
+public class BookingService extends Thread{
 
     private final UserService userService;
     private final TheatreService theatreService;
@@ -31,6 +33,19 @@ public class BookingService {
         this.theatreRepository = theatreRepository;
     }
 
+//    private final BlockingQueue<BookSeatsRequest> bookingQueue = new LinkedBlockingQueue<>();
+//
+//    @Override
+//    public void run() {
+//        while (!Thread.currentThread().isInterrupted()) {
+//            try {
+//                BookSeatsRequest bookSeatsRequest = bookingQueue.take();
+//                bookSeats(bookSeatsRequest);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
+//    }
 
     public ResponseEntity<BookSeatResponse> bookSeats(BookSeatsRequest bookSeatsRequest){
         BookSeatResponse bookSeatResponse = new BookSeatResponse();

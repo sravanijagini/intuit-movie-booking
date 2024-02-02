@@ -4,6 +4,7 @@ import com.example.intuitmoviebooking.model.Seat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -27,6 +28,7 @@ public class BookSeatsRequest {
     @JsonProperty("showTime")
     private String showTime;
 
+    @NotNull
     @JsonProperty("seatsToBook")
     private List<Seat> seatsToBook;
 

@@ -75,7 +75,7 @@ public class BookingServiceTest {
     @Test
     public void testBookSeats_Success_WithBody() {
 
-        BookSeatsRequest bookSeatsRequest = new BookSeatsRequest("Bangalore", 1, 1, "9:00", Collections.singletonList(new Seat(1, 1, false)));
+        BookSeatsRequest bookSeatsRequest = new BookSeatsRequest("Bangalore", "PVR", 1, "9:00", Collections.singletonList(new Seat(1, 1, false)));
         Hall hall = new Hall();
         hall.setHallId(1);
         hall.setTypeOfHall(TypeOfHall.valueOf("TWO_DIMENSION"));
@@ -89,7 +89,7 @@ public class BookingServiceTest {
         user.setUserName("");
         user.setMailId("");
         when(userService.getUserById(bookSeatsRequest.getMailId())).thenReturn(Collections.singletonList(user));
-        when(theatreService.getTheatresByCityAndId(bookSeatsRequest.getCityName(), bookSeatsRequest.getTheatreId())).thenReturn(theatre);
+//        when(theatreService.getTheatresByCityAndName(bookSeatsRequest.getCityName(), bookSeatsRequest.getTheatreName())).thenReturn(theatre);
         when(theatreService.getAllSeats(bookSeatsRequest)).thenReturn(Collections.singletonList(new Seat(1, 1, false)));
         when(helperUtil.createBooking(any(), any())).thenReturn(new Booking());
 
