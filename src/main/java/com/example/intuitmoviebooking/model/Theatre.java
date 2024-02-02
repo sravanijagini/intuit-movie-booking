@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -14,6 +15,10 @@ public class Theatre {
     @Id
     private String id;
     private int seq;
+
+    @NotNull
+    @JsonProperty("date")
+    private String date;
 
     @JsonProperty("theatreId")
     private int theatreId;

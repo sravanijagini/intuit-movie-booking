@@ -4,6 +4,7 @@ import com.example.intuitmoviebooking.Utils.HelperUtil;
 import com.example.intuitmoviebooking.model.*;
 import com.example.intuitmoviebooking.model.Requests.BookSeatsRequest;
 import com.example.intuitmoviebooking.model.Responses.BookSeatResponse;
+import com.example.intuitmoviebooking.model.Responses.TheatreResponse;
 import com.example.intuitmoviebooking.repository.TheatreRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,22 +37,25 @@ public class BookingService {
 
         User user = userService.getUserById(bookSeatsRequest.getMailId()).getFirst();
         if(user == null){
-            List<String> res = new ArrayList<>();
-            res.add("This request couldn't be processed. Please enter a valid Email ID");
-            bookSeatResponse.setMessages(res);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bookSeatResponse);
+            return helperUtil.errorResponse("This request couldn't be processed. Please enter a valid Email ID");
         }
 
         List<Seat> allSeats = theatreService.getAllSeats(bookSeatsRequest);
         if(allSeats == null || allSeats.isEmpty()){
-            List<String> res = new ArrayList<>();
-            res.add("This request couldn't be processed. Hall hasn't been defined properly");
-            bookSeatResponse.setMessages(res);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bookSeatResponse);
+            return helperUtil.errorResponse("This request couldn't be processed. Hall is full");
         }
 
-        // update theatre repo
-        Theatre theatre = theatreService.getTheatresByCityAndId(bookSeatsRequest.getCityName(), bookSeatsRequest.getTheatreId());
+
+        ResponseEntity<TheatreResponse> theatreRes = theatreService.getTheatresByCityNameDate(bookSeatsRequest.getCityName(),
+                                            bookSeatsRequest.getTheatreName(),
+                                            bookSeatsRequest.getDate());
+        Theatre theatre;
+        if(theatreRes.hasBody() && theatreRes.getBody() != null && !theatreRes.getBody().getTheatreList().isEmpty()){
+            theatre = theatreRes.getBody().getTheatreList().getFirst();
+        }else{
+            return helperUtil.errorResponse("There is no such theatre with the entered combination");
+        }
+
         if(theatre != null){
             List<Hall> hallsInTheatre = theatre.getHalls();
             Hall requiredHall = theatreService.getHallFromTheatre(theatre, bookSeatsRequest.getHallId());
@@ -65,7 +69,7 @@ public class BookingService {
                     List<Seat> seats = hallSeatLayout.getSeats();
 
                     List<Seat> unavailableSeats = new ArrayList<>(bookSeatsRequest.getSeatsToBook().stream().map(seatToBook -> {
-                        int idx = (seatToBook.getRow() - 1) * hallSeatLayout.getCols() + seatToBook.getCol() - 1;
+                        int idx = (seatToBook.getRow() - 1) * requiredHall.getNumberOfCols() + seatToBook.getCol() - 1;
                         Seat seat = allSeats.get(idx);
                         if (seat.isBooked()) {
                             return seat;
@@ -82,7 +86,7 @@ public class BookingService {
                     }
 
                     bookSeatsRequest.getSeatsToBook().forEach(seatToBook -> {
-                        int idx = (seatToBook.getRow() - 1)*hallSeatLayout.getCols() + seatToBook.getCol() - 1;
+                        int idx = (seatToBook.getRow() - 1)* requiredHall.getNumberOfCols()+ seatToBook.getCol() - 1;
                         Seat seat = seats.get(idx);
                         seat.setBooked(true);
 

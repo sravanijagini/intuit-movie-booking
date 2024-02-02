@@ -9,6 +9,9 @@ import com.example.intuitmoviebooking.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
@@ -24,28 +27,34 @@ public class RequestValidation {
     }
 
     public List<String> validateTheatre(Theatre theatre) {
-        List<String> invalid_timings = new ArrayList<>();
-        List<String> invalid_movies = new ArrayList<>();
+        List<String> validation_error = new ArrayList<>();
 
         if (theatre != null) {
+            List<String> invalid_timings = new ArrayList<>();
+            List<String> invalid_movies = new ArrayList<>();
             theatre.getHalls().forEach(hall ->
                 invalid_timings.addAll(validateHallTimings(hall))
             );
 
+            validation_error.addAll(invalid_timings);
 
             theatre.getHalls().forEach(hall ->
                 invalid_movies.addAll(validateHallMovies(hall)));
 
-            invalid_timings.addAll(invalid_movies);
+            validation_error.addAll(invalid_movies);
 
             String cityValidation = validateCity(theatre.getCityName());
             if(cityValidation != null){
-                invalid_timings.add(cityValidation);
+                validation_error.add(cityValidation);
+            }
+
+            if(!validateDate(theatre.getDate())){
+                validation_error.add("Please enter a valid date");
             }
 
         }
 
-        return invalid_timings;
+        return validation_error;
     }
 
     public List<String> validateHallTimings(Hall hall){
@@ -63,6 +72,17 @@ public class RequestValidation {
         }
 
         return invalid_time;
+    }
+
+    public boolean validateDate(String date){
+        DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(date);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
     }
 
     public List<String> validateHallMovies(Hall hall){

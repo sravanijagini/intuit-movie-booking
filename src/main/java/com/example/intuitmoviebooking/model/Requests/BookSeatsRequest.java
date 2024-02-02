@@ -12,11 +12,14 @@ public class BookSeatsRequest {
     @JsonProperty("mailId")
     private String mailId;
 
+    @JsonProperty("date")
+    private String date;
+
     @JsonProperty("cityName")
     private String cityName;
 
-    @JsonProperty("theatreId")
-    private int theatreId;
+    @JsonProperty("theatreName")
+    private String theatreName;
 
     @JsonProperty("hallId")
     private int hallId;
@@ -27,9 +30,9 @@ public class BookSeatsRequest {
     @JsonProperty("seatsToBook")
     private List<Seat> seatsToBook;
 
-    public BookSeatsRequest(String cityName, int theatreId, int hallId, String showTime, List<Seat> seatsToBook) {
+    public BookSeatsRequest(String cityName, String theatreName, int hallId, String showTime, List<Seat> seatsToBook) {
         this.cityName = cityName;
-        this.theatreId = theatreId;
+        this.theatreName = theatreName;
         this.hallId = hallId;
         this.showTime = showTime;
         this.setSeatsToBook(seatsToBook);

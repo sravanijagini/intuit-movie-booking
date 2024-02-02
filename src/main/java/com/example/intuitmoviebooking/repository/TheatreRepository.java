@@ -14,4 +14,7 @@ public interface TheatreRepository extends MongoRepository<Theatre, String> {
     @Query(value = "{cityName:'?0', theatreName: '?1'}")
     List<Theatre> findAll(String cityName, String theatreName);
 
+    @Query(value = "{cityName:'?0', theatreName: '?1', date:  '?2'}")
+    List<Theatre> findAll(String cityName, String theatreName, String date);
+
 }

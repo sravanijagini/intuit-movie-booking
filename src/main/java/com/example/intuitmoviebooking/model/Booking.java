@@ -10,7 +10,7 @@ public class Booking {
 
     private UUID bookingId;
     private Date date;
-    private int theatreId;
+    private String theatreName;
     private int hallId;
     private String userMailId;
 

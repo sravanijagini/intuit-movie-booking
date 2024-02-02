@@ -2,7 +2,10 @@ package com.example.intuitmoviebooking.Utils;
 
 import com.example.intuitmoviebooking.model.Booking;
 import com.example.intuitmoviebooking.model.Requests.BookSeatsRequest;
+import com.example.intuitmoviebooking.model.Responses.BookSeatResponse;
 import com.example.intuitmoviebooking.model.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ public class HelperUtil {
         Booking booking = new Booking();
         UUID bId = UUID.randomUUID();
         booking.setBookingId(bId);
-        booking.setTheatreId(bookSeatsRequest.getTheatreId());
+        booking.setTheatreName(bookSeatsRequest.getTheatreName());
         booking.setHallId(bookSeatsRequest.getHallId());
         booking.setUserMailId(user.getMailId());
         return booking;
@@ -27,5 +30,14 @@ public class HelperUtil {
             userBookings = new ArrayList<>();
         }
         return userBookings;
+    }
+
+    public ResponseEntity<BookSeatResponse> errorResponse(String message){
+
+        BookSeatResponse bookSeatResponse = new BookSeatResponse();
+        List<String> res = new ArrayList<>();
+        res.add(message);
+        bookSeatResponse.setMessages(res);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bookSeatResponse);
     }
 }

@@ -3,7 +3,6 @@ package com.example.intuitmoviebooking.services;
 import com.example.intuitmoviebooking.Utils.HelperUtil;
 import com.example.intuitmoviebooking.model.*;
 import com.example.intuitmoviebooking.model.Requests.BookSeatsRequest;
-import com.example.intuitmoviebooking.model.Responses.BookSeatResponse;
 import com.example.intuitmoviebooking.model.Responses.TheatreResponse;
 import com.example.intuitmoviebooking.repository.TheatreRepository;
 import com.example.intuitmoviebooking.validator.RequestValidation;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,24 +27,18 @@ public class TheatreService {
     private final RequestValidation requestValidation;
     private final NextSequenceService nextSequenceService;
     private final MovieService movieService;
-    private final UserService userService;
     private final MongoTemplate mongoTemplate;
-    private final HelperUtil helperUtil;
 
     @Autowired
     TheatreService(TheatreRepository theatreRepository,
                    RequestValidation requestValidation,
                    NextSequenceService nextSequenceService,
                    MovieService movieService,
-                   UserService userService,
-                   HelperUtil helperUtil,
                    MongoTemplate mongoTemplate) {
         this.theatreRepository = theatreRepository;
         this.requestValidation = requestValidation;
         this.nextSequenceService = nextSequenceService;
         this.movieService = movieService;
-        this.userService = userService;
-        this.helperUtil = helperUtil;
         this.mongoTemplate = mongoTemplate;
     }
 
@@ -57,10 +51,11 @@ public class TheatreService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(theatreResponse);
         }
 
-        List<Theatre> theatreList = theatreRepository.findAll(new_theatre.getCityName(), new_theatre.getTheatreName());
+        List<Theatre> theatreList = theatreRepository.findAll(new_theatre.getCityName(), new_theatre.getTheatreName(), new_theatre.getDate());
         if(!theatreList.isEmpty()){
             List<String> res = new ArrayList<>();
-            res.add("A Theatre Already Exists with the name : " + new_theatre.getTheatreName() + " in the city : " + new_theatre.getCityName());
+            res.add("A Theatre Already Exists with the name : " + new_theatre.getTheatreName() + " in the city : " + new_theatre.getCityName()
+                    + " at this date : " + new_theatre.getDate());
             theatreResponse.setValidationList(res);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(theatreResponse);
         }
@@ -71,31 +66,35 @@ public class TheatreService {
         List<Hall> hallList = new_theatre.getHalls();
 
         hallList.forEach(hall -> {
-            Map<String, SeatLayout> hm = hall.getSeatLayoutPerShow();
-            hm.keySet().forEach(
+            Map<String, SeatLayout> hm = null;
+            hm = new HashMap<>();
+            Map<String, SeatLayout> finalHm = hm;
+            hall.getShowTimings().keySet().forEach(time -> finalHm.put(time, new SeatLayout()));
+
+            finalHm.keySet().forEach(
                     key -> {
-                        SeatLayout seatLayout = hm.get(key);
+                        SeatLayout seatLayout = finalHm.get(key);
                         int rows = 1;
                         int cols = 1;
 
                         if(seatLayout.getSeats() == null || seatLayout.getSeats().isEmpty()){
                             List<Seat> new_seats = new ArrayList<>();
 
-                            while(rows <= seatLayout.getRows()){
+                            while(rows <= hall.getNumberOfRows()){
                                 Seat new_seat = new Seat(rows, cols, false);
                                 new_seats.add(new_seat);
                                 cols++;
 
-                                if(cols > seatLayout.getCols()){
+                                if(cols > hall.getNumberOfCols()){
                                     cols = 1;
                                     rows++;
                                 }
                             }
                             seatLayout.setSeats(new_seats);
                         }
-                        hm.put(key, seatLayout);
+                        finalHm.put(key, seatLayout);
                     });
-            hall.setSeatLayoutPerShow(hm);
+            hall.setSeatLayoutPerShow(finalHm);
         });
 
         theatreRepository.save(new_theatre);
@@ -172,7 +171,7 @@ public class TheatreService {
         Query query = new Query(Criteria.where("theatreId").is(theatreId));
         List<Theatre> theatreList =  mongoTemplate.find(query, Theatre.class);
 
-        if(theatreList != null && !theatreList.isEmpty()){
+        if(!theatreList.isEmpty()){
 
             List<Theatre> theatresFromDB = theatreList.stream().map(theatre -> {
                 if(theatre.getCityName() != null && theatre.getCityName().equalsIgnoreCase(city)){
@@ -191,7 +190,11 @@ public class TheatreService {
     }
 
     List<Seat> getAllSeats(BookSeatsRequest bookSeatsRequest){
-        Theatre theatre = getTheatresByCityAndId(bookSeatsRequest.getCityName() , bookSeatsRequest.getTheatreId());
+        List<Theatre> theatreList = theatreRepository.findAll(bookSeatsRequest.getCityName() , bookSeatsRequest.getTheatreName());
+        Theatre theatre = null;
+        if(theatreList != null && !theatreList.isEmpty()){
+            theatre = theatreList.getFirst();
+        }
 
         if(theatre != null){
             List<Hall> hallsInTheatre = theatre.getHalls();
@@ -229,4 +232,13 @@ public class TheatreService {
 //                .toList().getFirst();
     }
 
+
+    public ResponseEntity<TheatreResponse> getTheatresByCityNameDate(String city, String theatreName, String date){
+        TheatreResponse theatreResponse = new TheatreResponse();
+
+        List<Theatre> theatreList = theatreRepository.findAll(city, theatreName, date);
+        theatreResponse.setTheatreList(theatreList);
+
+        return ResponseEntity.ok(theatreResponse);
+    }
 }
