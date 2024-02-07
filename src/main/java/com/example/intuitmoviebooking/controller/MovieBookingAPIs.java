@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,6 +37,7 @@ public class MovieBookingAPIs {
         this.bookingService = bookingService;
     }
 
+
     // add a new city
     @PostMapping(value = "/add/city", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewCity(@RequestBody City city){
@@ -54,6 +56,22 @@ public class MovieBookingAPIs {
 
         try{
             cityList = cityService.getAllCities();
+            return ResponseEntity.ok(cityList);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+
+    @GetMapping("/test")
+    public ResponseEntity<List<String>> getTestList(){
+        List<String> cityList;
+
+        try{
+            cityList = new ArrayList<>();
+            cityList.add("Test1");
+            cityList.add("Test2");
+
             return ResponseEntity.ok(cityList);
         }catch(Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
